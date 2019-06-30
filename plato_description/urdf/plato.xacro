@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="plato_robot">
+    <xacro:include filename="$(find plato_description)/urdf/plato_gazebo.xacro"/>
+    <xacro:include filename="$(find plato_description)/urdf/parameters.xacro"/>
+    <xacro:include filename="$(find plato_description)/urdf/utils.xacro"/>
+    <xacro:include filename="$(find plato_description)/urdf/materials.xacro"/>
+    <xacro:include filename="$(find plato_description)/urdf/body_parts/body_box.urdf.xacro"/>
+    <xacro:include filename="$(find plato_description)/urdf/body_parts/wheel.urdf.xacro"/>
+    <xacro:include filename="$(find plato_description)/urdf/body_parts/caster_wheel.urdf.xacro"/>
+    <xacro:include filename="$(find plato_description)/urdf/sensors/VLP-16.urdf.xacro"/>
+    <xacro:include filename="$(find plato_description)/urdf/sensors/camera.urdf.xacro"/>
+    <xacro:include filename="$(find plato_description)/urdf/sensors/hokuyo.urdf.xacro"/>
+    <xacro:include filename="$(find plato_description)/urdf/sensors/imu.urdf.xacro"/>
+    <xacro:include filename="$(find plato_description)/urdf/sensors/bumper.urdf.xacro"/>
+    <xacro:include filename="$(find plato_description)/urdf/sensors/sonar.urdf.xacro"/>
+
+    <body_box name="${base_name}" M="${M}" length_x="${length_x}"
+                                  color="${color_base}"
+                                  length_y="${length_y}"
+                                  length_z="${length_z}">
+       <origin xyz="0 0 0" rpy=" 0 0 0"/>
+    </body_box>
+
+    <wheel parent="${base_name}" name="left_wheel" wheel_radius="${wheel_radius}"
+                            color="${color_wheel}"
+                            wheel_width="${wheel_width}"
+                            wheel_mass="${wheel_mass}"
+                            wheel_effort_limit="${wheel_effort_limit}"
+                            wheel_velocity_limit="${wheel_velocity_limit}">
+       <origin xyz="${wheel_position_x}
+                    ${wheel_distance/2}
+                    ${caster_position_z + wheel_radius - caster_radius}"
+                    rpy="0 0 0"/>
+    </wheel>
+
+    <wheel parent="${base_name}" name="right_wheel" wheel_radius="${wheel_radius}"
+                            color="${color_wheel}"
+                            wheel_width="${wheel_width}"
+                            wheel_mass="${wheel_mass}"
+                            wheel_effort_limit="${wheel_effort_limit}"
+                            wheel_velocity_limit="${wheel_velocity_limit}">
+      <origin xyz="${wheel_position_x}
+                   ${-wheel_distance/2}
+                   ${caster_position_z + wheel_radius - caster_radius}"
+                   rpy="0 0 0"/>
+    </wheel>
+
+    <caster_wheel parent="${base_name}" name="caster_wheel"
+                  color="${color_caster_wheel}"
+                  caster_mass="${caster_mass}"
+                  caster_radius="${caster_radius}">
+      <origin xyz="${caster_position_x}
+                   ${caster_position_y}
+                   ${caster_position_z}" rpy="0 0 0"/>
+    </caster_wheel>
+
+    <VLP-16 parent="${base_name}" name="velodyne" topic="/velodyne_points"
+            hz="${v16_hz}" samples="${v16_samples}">
+      <origin xyz="${v16_pos_x} ${v16_pos_y} ${v16_pos_z}" rpy="0 0 0" />
+    </VLP-16>
+
+    <camera_sensor xyz="${camera_pos_x} ${camera_pos_y} ${camera_pos_z}"
+                   rpy="0 0 0" parent="${base_name}"
+                   color="${color_camera}" name= "camera1" topic="plato/camera1">
+    </camera_sensor>
+
+
+    <hokuyo_sensor xyz="${hokuyo_pos_x} ${hokuyo_pos_y} ${hokuyo_pos_z}"
+                   rpy="0 0 0" parent="${base_name}"
+                   color="${color_lidar}">
+    </hokuyo_sensor>
+
+    <imu_sensor xyz="${imu_pos_x} ${imu_pos_y} ${imu_pos_z}"
+                rpy="0 0 0" parent="${base_name}"
+                color="${color_imu}">
+    </imu_sensor>
+
+    <bumper parent="${base_name}" name="center_bumper"
+            topic="center_bumper" col_num="3"
+            color="${color_bumper}">
+      <origin xyz="0.28 0 -0.1" rpy="0 0 0" />
+    </bumper>
+
+    <bumper parent="${base_name}" name="right_bumper"
+            topic="right_bumper" col_num="9"
+            color="${color_bumper}">
+      <origin xyz="0.22 ${-wheel_distance/2} -0.1" rpy="0 0 ${-M_PI/4}" />
+    </bumper>
+
+    <bumper parent="${base_name}" name="left_bumper"
+            topic="left_bumper" col_num="7"
+            color="${color_bumper}">
+      <origin xyz="0.22 ${wheel_distance/2} -0.1" rpy="0 0 ${M_PI/4}" />
+    </bumper>
+
+    <sonar_sensor parent="${base_name}" name="center_sonar"
+                  color="${color_sonar}"
+                  ros_topic="/center_sonar"
+                  update_rate="10" min_range="0.3" max_range="2"
+                  field_of_view="56" ray_count="2" >
+      <origin xyz="0.25 0 0" rpy="0 0 0" />
+    </sonar_sensor>
+
+    <sonar_sensor parent="${base_name}" name="left_sonar"
+                  color="${color_sonar}"
+                  ros_topic="/left_sonar"
+                  update_rate="10" min_range="0.3" max_range="2"
+                  field_of_view="56" ray_count="2" >
+      <origin xyz="0.22 ${(-wheel_distance/2)+0.04} 0" rpy="0 0 ${-M_PI/4}"/>
+    </sonar_sensor>
+
+    <sonar_sensor parent="${base_name}" name="right_sonar"
+                  color="${color_sonar}"
+                  ros_topic="/right_sonar"
+                  update_rate="10" min_range="0.3" max_range="2"
+                  field_of_view="56" ray_count="2" >
+      <origin xyz="0.22 ${(wheel_distance/2)-0.04} 0" rpy="0 0 ${M_PI/4}"/>
+    </sonar_sensor>
+
+
+</robot>

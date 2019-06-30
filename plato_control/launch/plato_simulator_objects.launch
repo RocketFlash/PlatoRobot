@@ -1,0 +1,55 @@
+<?xml version="1.0"?>
+<launch>
+     <arg name="run_rviz" default="true"/>
+     <param name="use_sim_time" value="true"/>
+
+     <!--node pkg="plato_control" name="publish_goal" type="publish_goal.py"/-->
+
+     <!--node pkg="plato_follower" name="follow_me" type="follow_me.py"/-->
+
+     <node pkg="tf" type="static_transform_publisher" name="camera_2_velodyne" args="0 0.07 0 1.5707963 3.14159 1.5707963 velodyne camera 100"/>
+
+     <node pkg="plato_control" name="is_moving" type="is_moving.py"/>
+
+     <node name="robot_state_publisher" pkg="robot_state_publisher"
+            type="robot_state_publisher"/>
+
+     <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+          <param name="use_gui" value="False"/>
+     </node>
+
+     <!-- Launch gmapping -->
+     <include file="$(find gmapping_nav)/launch/gmapping.launch">
+	       <arg name="is_simulation" value="true"/>
+     </include>
+
+     <param name="robot_description" command="$(find xacro)/xacro.py '$(find plato_description)/urdf/plato.xacro'"/>
+
+
+     <arg name="resolution" default="0.007" />
+
+     <node name="velodyne_2_laserscan" pkg="velodyne_laserscan" type="velodyne_laserscan_node">
+       <param name="resolution" value="$(arg resolution)"/>
+     </node>
+
+     <!-- <node respawn="true" pkg="joy" type="joy_node" name="plato_joy" >
+      <param name="autorepeat_rate" value="10"/>
+     </node> -->
+
+     <!-- Move base -->
+     <include file="$(find move_base_nav)/launch/move_base.launch">
+     </include>
+
+     <include file="$(find plato_follower)/launch/plato_darknet.launch">
+        <arg name="model_name" value="yolov3-openimages"/>
+     </include>
+
+     <!-- <include file="$(find plato_hololens)/launch/object_detector3D.launch">
+     </include> -->
+
+
+     <node name="rviz" pkg="rviz" type="rviz" args="-d $(find gmapping_nav)/rviz/gmapping_rviz.rviz" if="$(eval run_rviz == true)"/>
+
+
+
+</launch>

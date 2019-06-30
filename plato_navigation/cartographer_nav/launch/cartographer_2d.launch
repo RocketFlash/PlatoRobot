@@ -1,0 +1,22 @@
+<launch>
+    <param name="/use_sim_time" value="true"/>
+
+    <node name="cartographer_node" pkg="cartographer_ros"
+          type="cartographer_node" args="
+          -configuration_directory $(find cartographer_nav)/config
+          -configuration_basename plato_2d.lua"
+          output="screen">
+        <remap from="scan" to="plato/laser/scan"/>
+        <remap from="imu" to="plato/imu_data"/>
+    </node>
+
+    <node name="cartographer_occupancy_grid_node" pkg="cartographer_ros"
+          type="cartographer_occupancy_grid_node" args="-resolution 0.05"/>
+
+    <node name="rviz" pkg="rviz" type="rviz" required="true"
+          args="-d $(find cartographer_ros)/configuration_files/demo_2d.rviz"/>
+
+    <!--<node name="playbag" pkg="rosbag" type="play"-->
+    <!--args="&#45;&#45;clock $(arg bag_filename)" />-->
+
+</launch>

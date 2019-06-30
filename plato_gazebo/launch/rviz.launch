@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+
+
+    <node name="rviz" pkg="rviz" type="rviz" args="-d $(find plato_gazebo)/rviz/plato.rviz"/>
+
+</launch>

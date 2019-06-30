@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:macro name="body_box" params="name color M *origin length_x length_y length_z">
+
+    <link name="${name}">
+        <inertial>
+            <mass value="${M}"/>
+            <xacro:insert_block name="origin" />
+            <parallelepiped_inertia m="${M}" x_dim="${length_x}"
+                                  y_dim="${length_y}"
+                                  z_dim="${length_z}"/>
+        </inertial>
+        <collision name="${name}_collision">
+            <geometry>
+                <box size="${length_x}
+                           ${length_y}
+                           ${length_z}"/>
+            </geometry>
+        </collision>
+        <visual name="${name}_visual">
+            <xacro:insert_block name="origin" />
+            <geometry>
+                <box size="${length_x}
+                           ${length_y}
+                           ${length_z}"/>
+            </geometry>
+            <material name="${color}"/>
+        </visual>
+    </link>
+
+  </xacro:macro>
+</robot>

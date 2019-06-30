@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+    <node pkg="plato_control" name="keyboard_control" type="control_keyboard_gui.py"/>
+</launch>

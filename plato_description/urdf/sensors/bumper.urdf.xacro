@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="bumper">
+  <xacro:macro name="bumper" params="*origin color name:=bumper parent:=base_link topic:=/bumper_value col_num:=3" >
+
+    <joint name="${name}_base_joint" type="fixed">
+      <xacro:insert_block name="origin" />
+      <parent link="${parent}"/>
+      <child link="${name}"/>
+    </joint>
+
+    <link name="${name}">
+      <inertial>
+        <mass value="0.01" />
+        <inertia ixx="0.01" ixy="0.0" ixz="0.0" iyy="0.01" iyz="0.0" izz="0.01" />
+      </inertial>
+      <visual>
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <box size="0.01 0.115 0.03"/>
+        </geometry>
+        <material name="${color}"/>
+      </visual>
+      <collision name="${name}">
+        <origin xyz="0 0 0" rpy="0 0 0" />
+        <geometry>
+          <box size="0.01 0.115 0.03"/>
+        </geometry>
+      </collision>
+    </link>
+
+    <gazebo reference="${name}">
+      <selfCollide>false</selfCollide>
+      <sensor type="contact" name="${name}_collision_sensor">
+        <always_on>true</always_on>
+        <update_rate>30.0</update_rate>
+        <contact>
+          <collision>${parent}_fixed_joint_lump__${name}_collision_${col_num}</collision>
+        </contact>
+        <plugin name="${name}_gazebo_ros_bumper_controller" filename="libgazebo_ros_bumper.so">
+          <bumperTopicName>${topic}</bumperTopicName>
+          <frameName>${name}</frameName>
+        </plugin>
+      </sensor>
+    </gazebo>
+  </xacro:macro>
+</robot>

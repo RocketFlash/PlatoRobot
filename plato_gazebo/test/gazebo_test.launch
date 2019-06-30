@@ -1,0 +1,19 @@
+<launch>
+
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="world_name" value="$(find plato_gazebo)/worlds/plato.world"/>
+        <arg name="gui" value="false"/>
+        <arg name="headless" default="true"/>
+        <arg name="recording" default="true"/>
+        <arg name="paused" value="false"/>
+        <arg name="verbose" value="true" />
+    </include>
+
+    <param name="robot_description" command="$(find xacro)/xacro.py '$(find plato_description)/urdf/plato.xacro'"/>
+
+    <node name="plato_spawn" pkg="gazebo_ros" type="spawn_model" output="screen"
+          args="-urdf -param robot_description -model plato -z 1"/>
+
+    <test test-name="gazebo_test" pkg="plato_gazebo" type="gazebo_test.py" time-limit="180"/>
+
+</launch>

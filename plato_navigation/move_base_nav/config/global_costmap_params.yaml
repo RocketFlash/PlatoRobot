@@ -1,0 +1,9 @@
+global_costmap:
+  global_frame: map
+  robot_base_frame: chassis
+  update_frequency: 5
+  publish_frequency: 1
+  resolution: 0.1
+  static_map: true
+  width: 3.0
+  height: 3.0

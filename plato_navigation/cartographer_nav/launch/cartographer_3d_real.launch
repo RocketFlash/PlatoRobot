@@ -1,0 +1,26 @@
+<launch>
+
+	<node pkg="hokuyo3d" type="hokuyo3d" name="hokuyo3d" output="screen">
+        <!--<param name="range_min" value="0.3"/>-->
+    </node>
+
+    <include file="$(find hokuyo3d)/launch/hokuyo3d_frames.launch">
+    </include>
+
+    <!--node pkg="tf" type="static_transform_publisher" name="laser_transform" args="$(optenv laserpos 0.011 0 0.336 0 0 3.14) base_link hokuyo3d 100"/-->
+  
+    <node name="cartographer_node" pkg="cartographer_ros"
+          type="cartographer_node" args="
+          -configuration_directory $(find cartographer_nav)/config
+          -configuration_basename plato_3d_real.lua"
+          output="screen">
+        <remap from="points2" to="hokuyo3d/hokuyo_cloud2"/>
+        <remap from="imu" to="hokuyo3d/imu"/>
+    </node>
+
+    <node name="cartographer_occupancy_grid_node" pkg="cartographer_ros"
+          type="cartographer_occupancy_grid_node" args="-resolution 0.05"/>
+
+    <node name="rviz" pkg="rviz" type="rviz" required="true"
+          args="-d $(find cartographer_ros)/configuration_files/demo_3d.rviz"/>
+</launch>

@@ -1,0 +1,84 @@
+<?xml version="1.0"?>
+<launch>
+
+   <param name="use_sim_time" value="false"/>
+
+   <node pkg="tf" type="static_transform_publisher" name="camera_2_velodyne" args="0 0.07 0 1.5707963 3.14159 1.5707963 velodyne camera 100"/>
+ 
+  <node pkg="plato_control" name="publish_data" type="publish_data.py"/>
+
+  <node pkg="plato_control" name="subscribe_control" type="subscribe_control.py"/>
+
+  <node pkg="plato_control" name="publish_goals" type="publish_goals.py"/>
+
+  <node pkg="plato_control" name="transform_to_pose" type="transform_to_pose.py"/>
+
+  <node pkg="plato_control" name="is_moving" type="is_moving.py"/>
+
+  <!--node pkg="plato_hololens" name="match_point_clouds" type="match_point_clouds.py"/-->
+
+  <node pkg="plato_control" name="publish_odometry" type="publish_odometry.py"/>
+
+  <param name="robot_description" command="$(find xacro)/xacro.py '$(find plato_description)/urdf/plato.xacro'"/>
+
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
+
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+          <param name="use_gui" value="False"/>
+  </node>
+
+  <include file="$(find velodyne_pointcloud)/launch/VLP16_points.launch">
+ 	<arg name="frame_id" value="velodyne" />
+  </include>
+
+  <include file="$(find octolens)/launch/octomap.launch">
+  </include>
+
+  <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch">
+  </include>
+
+  <node pkg="octolens" name="compressed_markers" type="compressed_markers.py"/>
+
+
+    <!-- Launch gmapping -->
+    <include file="$(find gmapping_nav)/launch/gmapping.launch">
+	<arg name="is_simulation" value="false"/>
+    </include>
+
+
+  <!-- This node description you can take from usb_cam-test.launch -->
+   <node name="camera" pkg="usb_cam" type="usb_cam_node" output="screen" >
+     <param name="video_device" value="/dev/video1" />
+     <param name="image_width" value="640" />
+     <param name="image_height" value="480" />
+     <param name="pixel_format" value="yuyv" />
+     <param name="camera_frame_id" value="camera" />
+     <param name="io_method" value="mmap"/>
+     <param name="camera_info_url" value="package://usb_cam/head_camera.yaml" />
+ </node>
+
+    <arg name="resolution" default="0.007" />
+
+    <node name="velodyne_2_laserscan" pkg="velodyne_laserscan" type="velodyne_laserscan_node">
+      <param name="resolution" value="$(arg resolution)"/>
+    </node>
+
+  <!-- This node will launch web video server -->
+  <!--node name="web_video_server" pkg="web_video_server" type="web_video_server" /-->
+
+
+  <!--node respawn="true" pkg="joy" type="joy_node" name="plato_joy" >
+    <param name="autorepeat_rate" value="10"/>
+  </node-->
+
+   <!--include file="$(find plato_follower)/launch/plato_darknet.launch">
+        <arg name="model_name" value="yolov3-openimages"/>
+     </include-->
+
+   <!-- Move base -->
+     <include file="$(find move_base_nav)/launch/move_base.launch">
+     </include>
+
+	<node name="rviz" pkg="rviz" type="rviz" args="-d $(find gmapping_nav)/rviz/gmapping_rviz.rviz"/>
+
+</launch>

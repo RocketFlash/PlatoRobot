@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" name="camera">
+    <xacro:include filename="$(find plato_description)/urdf/parameters.xacro"/>
+
+    <xacro:macro name="camera_sensor" params="xyz rpy color parent name topic">
+
+        <joint name="${name}_joint" type="fixed">
+            <axis xyz="0 1 0"/>
+            <origin xyz="${xyz}" rpy="${rpy}"/>
+            <parent link="${parent}"/>
+            <child link="${name}"/>
+        </joint>
+
+        <link name="${name}">
+            <collision>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <geometry>
+                    <box size="${camera_size} ${camera_size} ${camera_size}"/>
+                </geometry>
+            </collision>
+            <visual>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <geometry>
+                    <box size="${camera_size} ${camera_size} ${camera_size}"/>
+                </geometry>
+                <material name="${color}"/>
+            </visual>
+            <inertial>
+                <mass value="${camera_mass}"/>
+                <origin xyz="0 0 0" rpy="0 0 0"/>
+                <box_inertia m="${camera_mass}" x="${camera_size}" y="${camera_size}" z="${camera_size}"/>
+                <inertia ixx="1e-6" ixy="0" ixz="0" iyy="1e-6" iyz="0" izz="1e-6"/>
+            </inertial>
+        </link>
+
+        <gazebo reference="${name}">
+            <material>Plato/Green</material>
+            <sensor type="camera" name="${name}_sensor">
+                <update_rate>60.0</update_rate>
+                <camera name="head">
+                    <horizontal_fov>1.3962634</horizontal_fov>
+                    <image>
+                        <width>${camera_res_width}</width>
+                        <height>${camera_res_height}</height>
+                        <format>R8G8B8</format>
+                    </image>
+                    <clip>
+                        <near>0.02</near>
+                        <far>300</far>
+                    </clip>
+                </camera>
+                <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+                    <alwaysOn>true</alwaysOn>
+                    <updateRate>0.0</updateRate>
+                    <cameraName>${topic}</cameraName>
+                    <imageTopicName>image_raw</imageTopicName>
+                    <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+                    <frameName>camera</frameName>
+                    <hackBaseline>0.07</hackBaseline>
+                    <distortionK1>0.0</distortionK1>
+                    <distortionK2>0.0</distortionK2>
+                    <distortionK3>0.0</distortionK3>
+                    <distortionT1>0.0</distortionT1>
+                    <distortionT2>0.0</distortionT2>
+                </plugin>
+            </sensor>
+        </gazebo>
+
+    </xacro:macro>
+
+</robot>

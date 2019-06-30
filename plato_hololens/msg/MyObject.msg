@@ -1,0 +1,2 @@
+int64 class_id
+geometry_msgs/Point pose

@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<launch>
+
+  <param name="/use_sim_time" value="true"/>
+
+  <arg name="bag_file_name" default="bag_318.bag"/>
+
+  <node name="rosplay" pkg="rosbag" type="play" args="$(find cartographer_nav)/../bagfiles/$(arg bag_file_name)  --clock"/>
+
+  <param name="robot_description" command="$(find xacro)/xacro.py '$(find plato_description)/urdf/plato.xacro'"/>
+
+  <node name="robot_state_publisher" pkg="robot_state_publisher"
+              type="robot_state_publisher"/>
+
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+            <param name="use_gui" value="False"/>
+  </node>
+
+
+ <node name="cartographer_node" pkg="cartographer_ros"
+      type="cartographer_node" args="
+          -configuration_directory $(find cartographer_nav)/config
+          -configuration_basename plato_2d_real.lua"
+      output="screen">
+    <remap from="scan" to="scan" />
+  </node>
+
+
+    <node name="cartographer_occupancy_grid_node" pkg="cartographer_ros"
+      type="cartographer_occupancy_grid_node" args="-resolution 0.01" />
+
+
+    <node name="rviz" pkg="rviz" type="rviz" required="true"
+          args="-d $(find cartographer_nav)/rviz/cartographer_2d_config.rviz"/>
+
+</launch>

@@ -1,0 +1,23 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:property name="M_PI" value="3.1415926535897931" />
+  
+  <xacro:macro name="cylinder_inertia" params="m r h">
+  <inertia  ixx="${m*(3*r*r+h*h)/12}" ixy = "0" ixz = "0"
+            iyy="${m*(3*r*r+h*h)/12}" iyz = "0"
+            izz="${m*r*r/2}" />
+  </xacro:macro>
+
+  <xacro:macro name="parallelepiped_inertia" params="m x_dim y_dim z_dim">
+  <inertia  ixx="${(1/3) * m * (z_dim*z_dim + y_dim*y_dim)}" ixy="0" ixz="0"
+            iyy="${(1/3) * m * (z_dim*z_dim + x_dim*x_dim)}" iyz="0"
+            izz="${(1/3) * m * (x_dim*x_dim + y_dim*y_dim)}"/>
+  </xacro:macro>
+
+  <xacro:macro name="sphere_inertia" params="m r">
+  <inertia ixx="${(2/5) * m * r * r}" ixy="0" ixz="0"
+           iyy="${(2/5) * m * r * r}" iyz="0"
+           izz="${(2/5) * m * r * r}"/>
+  </xacro:macro>
+
+</robot>

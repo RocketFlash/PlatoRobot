@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<launch>
+     <arg name="run_rviz" default="true"/>
+     <param name="use_sim_time" value="true"/>
+
+     <node pkg="tf" type="static_transform_publisher" name="camera_2_velodyne" args="0 0.07 0 1.5707963 3.14159 1.5707963 velodyne camera 100"/>
+
+     <node pkg="plato_control" name="publish_goals" type="publish_goals.py"/>
+
+     <node name="robot_state_publisher" pkg="robot_state_publisher"
+            type="robot_state_publisher"/>
+
+     <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+          <param name="use_gui" value="False"/>
+     </node>
+
+     <!-- Launch gmapping -->
+     <include file="$(find gmapping_nav)/launch/gmapping.launch">
+	       <arg name="is_simulation" value="true"/>
+     </include>
+
+     <param name="robot_description" command="$(find xacro)/xacro.py '$(find plato_description)/urdf/plato.xacro'"/>
+
+
+     <arg name="resolution" default="0.007" />
+
+     <node name="velodyne_2_laserscan" pkg="velodyne_laserscan" type="velodyne_laserscan_node">
+       <param name="resolution" value="$(arg resolution)"/>
+     </node>
+
+     <!-- Move base -->
+     <include file="$(find move_base_nav)/launch/move_base.launch">
+     </include>
+
+     <node pkg="explore_lite" type="explore" respawn="false" name="explore" output="screen">
+        <param name="robot_base_frame" value="chassis"/>
+        <param name="costmap_topic" value="map"/>
+        <param name="costmap_updates_topic" value="map_updates"/>
+        <param name="visualize" value="true"/>
+        <param name="planner_frequency" value="0.33"/>
+        <param name="progress_timeout" value="30.0"/>
+        <param name="potential_scale" value="3.0"/>
+        <param name="orientation_scale" value="0.0"/>
+        <param name="gain_scale" value="1.0"/>
+        <param name="transform_tolerance" value="0.3"/>
+        <param name="min_frontier_size" value="0.5"/>
+     </node>
+
+
+     <node name="rviz" pkg="rviz" type="rviz" args="-d $(find gmapping_nav)/rviz/gmapping_rviz.rviz" if="$(eval run_rviz == true)"/>
+
+
+
+</launch>

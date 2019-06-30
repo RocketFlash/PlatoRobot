@@ -1,0 +1,2 @@
+geometry_msgs/Point pose
+string image_base64

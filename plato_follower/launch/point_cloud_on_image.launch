@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<launch>
+    <node name="plato_follower" pkg="plato_follower" type="convert_pointcloud" output="screen" >
+   </node>
+
+</launch>

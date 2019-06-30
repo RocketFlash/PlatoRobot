@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+    <param name="use_sim_time" value="true"/>
+    <arg name="M_PI" default="3.1415926535897931"/>
+    <!-- Robot pose -->
+    <arg name="robot_x" default="0"/>
+    <arg name="robot_y" default="-5"/>
+    <arg name="robot_z" default="0.5"/>
+    <arg name="robot_roll" default="0"/>
+    <arg name="robot_pitch" default="0"/>
+    <arg name="robot_yaw" default="$(eval arg('M_PI')/2)"/>
+    <!-- Person pose -->
+    <arg name="person_x" default="0.5"/>
+    <arg name="person_y" default="0.5"/>
+    <arg name="person_z" default="0.5"/>
+    <arg name="person_roll" default="0"/>
+    <arg name="person_pitch" default="0"/>
+    <arg name="person_yaw" default="$(eval -arg('M_PI')/2)"/>
+
+    <include file="$(find gazebo_ros)/launch/empty_world.launch">
+        <arg name="world_name" value="$(find plato_gazebo)/worlds/cafe.world"/>
+        <arg name="paused" value="false"/>
+        <arg name="verbose" value="true" />
+    </include>
+
+    <!-- Spawn person model -->
+    <include file="$(find plato_gazebo)/launch/spawn_person.launch">
+      <arg name="x" value="$(arg person_x)"/>
+      <arg name="y" value="$(arg person_y)"/>
+      <arg name="z" value="$(arg person_z)"/>
+      <arg name="yaw" value="$(arg person_yaw)"/>
+      <arg name="robot_name" value="person_naokoeye"/>
+      <arg name="sdf_robot_file" value="$(find plato_gazebo)/models/person_naokoeye/model.sdf"/>
+    </include>
+
+    <!-- Spawn robot -->
+    <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find plato_description)/urdf/plato.xacro'"/>
+
+    <node name="plato_spawn" pkg="gazebo_ros" type="spawn_model" output="screen"
+          args="-urdf -param robot_description -model plato_robot
+          -x $(arg robot_x) -y $(arg robot_y) -z $(arg robot_z)
+          -R $(arg robot_roll) -P $(arg robot_pitch) -Y $(arg robot_yaw)"/>
+
+
+</launch>

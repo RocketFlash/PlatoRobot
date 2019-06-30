@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:macro name="wheel" params="name color parent *origin wheel_radius wheel_width wheel_mass wheel_effort_limit wheel_velocity_limit">
+
+    <link name="${name}">
+        <collision name="${name}_collision">
+            <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
+            <geometry>
+                <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
+            </geometry>
+        </collision>
+        <visual name="${name}_visual">
+            <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
+            <geometry>
+                <cylinder radius="${wheel_radius}" length="${wheel_width}"/>
+            </geometry>
+            <material name="${color}"/>
+        </visual>
+        <inertial>
+            <origin xyz="0 0 0" rpy="0 1.5707 1.5707"/>
+            <mass value="${wheel_mass}"/>
+            <cylinder_inertia m="${wheel_mass}" r="${wheel_radius}" h="${wheel_width}"/>
+        </inertial>
+    </link>
+
+    <joint name="${name}_hinge" type="continuous">
+        <xacro:insert_block name="origin" />
+        <parent link="${parent}"/>
+        <child link="${name}"/>
+        <axis xyz="0 1 0"/>
+        <limit effort="${wheel_effort_limit}" velocity="${wheel_velocity_limit}"/>
+        <joint_properties damping="0.0" friction="0.0"/>
+    </joint>
+
+    <gazebo reference="${name}">
+      <mu1 value="1.0"/>
+      <mu2 value="1.0"/>
+      <kp  value="10000.0" />
+      <kd>100.0</kd>
+      <minDepth>0.0001</minDepth>
+      <maxVel>1.0</maxVel>
+
+      <material>Gazebo/FlatBlack</material>
+    </gazebo>
+
+  </xacro:macro>
+</robot>

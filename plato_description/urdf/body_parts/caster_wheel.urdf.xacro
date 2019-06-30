@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro">
+  <xacro:macro name="caster_wheel" params="name parent color *origin caster_mass caster_radius">
+
+    <link name="${name}">
+      <inertial>
+          <mass value="${caster_mass}"/>
+          <origin xyz="0 0 0" rpy=" 0 0 0"/>
+          <sphere_inertia m="${caster_mass}" r="${caster_radius}"/>
+      </inertial>
+      <collision name="${name}_collision">
+          <origin xyz="0 0 0" rpy=" 0 0 0"/>
+          <geometry>
+              <sphere radius="${caster_radius}"/>
+          </geometry>
+      </collision>
+      <visual name="${name}_visual">
+          <origin xyz="0 0 0" rpy=" 0 0 0"/>
+          <geometry>
+              <sphere radius="${caster_radius}"/>
+          </geometry>
+          <material name="${color}"/>
+      </visual>
+    </link>
+
+    <joint name="${name}_joint" type="fixed">
+        <parent link="${parent}"/>
+        <child link="${name}"/>
+        <xacro:insert_block name="origin" />
+    </joint>
+
+    <gazebo reference="${name}">
+      <mu1>0.0</mu1>
+      <mu2>0.0</mu2>
+
+      <kp>100000000.0</kp>
+      <kd>1.0</kd>
+      <minDepth>0.0001</minDepth>
+      <maxVel>1.0</maxVel>
+
+    </gazebo>
+
+  </xacro:macro>
+</robot>

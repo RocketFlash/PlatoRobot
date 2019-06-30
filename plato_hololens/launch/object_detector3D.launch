@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<launch>
+    <node name="plato_hololens" pkg="plato_hololens" type="merge_pointcloud_and_image" output="screen" >
+   </node>
+
+</launch>

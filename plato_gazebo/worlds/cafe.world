@@ -1,0 +1,47 @@
+<?xml version="1.0" ?>
+<sdf version="1.5">
+
+  <world name="default">
+    <include>
+      <uri>model://ground_plane</uri>
+    </include>
+    <include>
+      <uri>model://sun</uri>
+      <diffuse>1 1 1 1</diffuse>
+    </include>
+	<include>
+		<uri>model://cafe</uri>
+		<pose>0 0 -0.2 0 0 0</pose>
+	</include>
+	<include>
+		<uri>model://cafe_table</uri>
+		<pose>2.0 -1 0 0 0 0</pose>
+		<name>table1</name>
+	</include>
+	<include>
+		<uri>model://cafe_table</uri>
+		<pose>2.0 -4 0 0 0 0</pose>
+		<name>table2</name>
+	</include>
+	<include>
+		<uri>model://cafe_table</uri>
+		<pose>-2.0 -3 0 0 0 0</pose>
+		<name>table3</name>
+	</include>
+	<include>
+		<uri>model://cafe_table</uri>
+		<pose>-2.0 -6 0 0 0 0</pose>
+		<name>table4</name>
+	</include>
+  <gui>
+    <camera name="world_camera">
+      <pose> 0 -10 5 0 0.57 1.57</pose>
+    </camera>
+  </gui>
+	<!--actor name="actor">
+      <skin>
+        <filename>walk.dae</filename>
+      </skin>
+    </actor-->
+  </world>
+</sdf>

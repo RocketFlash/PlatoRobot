@@ -1,0 +1,212 @@
+body {
+  margin: 0;
+  padding: 0;
+  background: url(http://innopolis.ru/upload/resize_cache/iblock/567/1500_1500_0/56796ab69d4f7b14c18bbd189f8935cd.JPG);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-position: center; 
+}
+
+li {
+  left: 5px;
+}
+
+nav {
+  margin: auto;
+  width: 40%;
+  margin-top: 1%;
+  border-radius: 50%;
+}
+
+.slidecontainer {
+    width: 100%;
+}
+
+.slider {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 15px;
+    border-radius: 5px;
+    background: #d3d3d3;
+    outline: none;
+    opacity: 0.7;
+    -webkit-transition: .2s;
+    transition: opacity .2s;
+}
+
+.slider:hover {
+    opacity: 1;
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: #4CAF50;
+    cursor: pointer;
+}
+
+.slider::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: #4CAF50;
+    cursor: pointer;
+}
+
+#hr_menu {
+  border-top: 2px solid #eee;
+}
+
+#logo {
+  position: relative;
+  font-size: 30px;
+  top: 15px;
+  left: 25px;
+  color: #777;
+}
+
+#logo:hover {
+  color: #333;
+  text-decoration: none;
+}
+
+
+#plato_map {
+  position: absolute;
+  right: 0; 
+  top: 1%;
+}
+
+#iframe_map {
+  width: 350px;
+  height: 325px;
+  border-width: 10px;
+  border-radius: 50%;
+
+}
+
+#response_value {
+  position: absolute;
+  right: 2%;
+  bottom: 3%;
+}
+
+#display_url {
+  position: absolute;
+  right: 2%;
+  bottom: 1%;
+}
+
+#arrow_position {
+  position: absolute;
+  right: 1.5%;
+  bottom: 5%;
+}
+
+#arrow_up {
+  bottom: 90px;
+  right: -188px;
+}
+
+#footer_logo {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  bottom: 4%;
+  left: 2%;
+}
+
+.full-screen {
+/*  making the video and map fullscreen  */
+  position: fixed;
+  right: 0; 
+  bottom: 0;
+  width: 100%; 
+  height: 100%;
+  z-index: -100;
+}
+
+.arrow:hover {
+  opacity: 1.0;
+}
+
+@import "compass/css3";
+.arrow {
+  width: 60px;
+  height: 60px;
+  position: relative;
+  display: inline-block;
+  margin: 15px 15px;
+  opacity: 0.7;
+}
+.arrow:before, .arrow:after {
+  content: '';
+  border-color: transparent;
+  border-style: solid;
+  position: absolute;
+}
+.arrow-up:before {
+  border: none;
+  background-color: black;
+  height: 50%;
+  width: 30%;
+  top: 50%;
+  left: 35%;
+}
+.arrow-up:after {
+  left: 0;
+  top: -50%;
+  border-width: 30px 30px;
+  border-bottom-color: black;
+}
+.arrow-right:before {
+  border: none;
+  background-color: black;
+  height: 30%;
+  width: 50%;
+  top: 35%;
+  left: 0;
+}
+.arrow-right:after {
+  left: 50%;
+  top: 0;
+  border-width: 30px 30px;
+  border-left-color: black;
+}
+.arrow-down:before {
+  border: none;
+  background-color: black;
+  height: 50%;
+  width: 30%;
+  top: 0;
+  left: 35%;
+}
+.arrow-down:after {
+  left: 0;
+  top: 50%;
+  border-width: 30px 30px;
+  border-top-color: black;
+}
+.arrow-left:before {
+  border: none;
+  background-color: black;
+  height: 30%;
+  width: 50%;
+  top: 35%;
+  left: 50%;
+}
+.arrow-left:after {
+  left: -50%;
+  top: 0;
+  border-width: 30px 30px;
+  border-right-color: black;
+}
+.sidenav {
+    width: 130px;
+    position: fixed;
+    top: 80px;
+    left: 10px;
+}

@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Plato</title>
+    <!-- Favicon -->
+    <link rel="shortcut icon" type="image/png"
+          href="https://cdn1.iconfinder.com/data/icons/social-media-vol-3-2/24/_p_copy-128.png"/>
+    <!-- Custom styles-->
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+    <!-- Custom fonts -->
+    <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Oswald' type='text/css'>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css"
+          integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
+</head>
+
+<body>
+
+<!-- Vertical navbar -->
+<div class="sidenav navbar navbar-default">
+    <ul class="nav navbar-nav">
+        <a id="logo" href="index.html">Plato</a>
+        <hr id="hr_menu">
+        <li onclick="checkConnection()"><a href="#"><i class="fas fa-retweet"></i> Connect with server</a></li>
+        <li id="show_video" style="display:none;"><a href="#"><i class="fas fa-video"></i> Show video</a></li>
+        <li id="show_map"><a href="#"><i class="fas fa-map-marker-alt"></i> Show map</a></li>
+        <li id="hide_preview"><a href="#"><i class="fas fa-eye-slash"></i> Preview</a></li>
+        <li id="show_preview" style="display:none;"><a href="#"><i class="fas fa-eye"></i> Preview</a></li>
+        <li><a href="#" data-toggle="modal" data-target="#speed_modal"><i class="fas fa-tachometer-alt"></i> Speed</a></li>
+        <li><a href="#" data-toggle="modal" data-target="#instruct"><i class="fas fa-cog"></i> Instruction</a></li>
+    </ul>
+</div>
+
+<!-- Display video from camera -->
+<div>
+    <img id="video_background" class="full-screen"
+         src="http://{camera_url}/stream?topic=/plato/camera1/image_raw"></img>
+</div>
+
+<!-- Rounded small map in the corner -->
+<div id="plato_map">
+    <iframe id="iframe_map" src="http://{camera_url}/stream?topic=/map_as_img" frameborder="0"
+            scrolling="yes" marginheight="20px" marginwidth="20px">
+    </iframe>
+</div>
+
+<!-- arrows for driving robot -->
+<div id="arrow_position">
+    <span id="arrow_up" class="arrow arrow-up" onclick="goForward()"></span>
+    <span id="arrow_left" class="arrow arrow-left" onclick="goLeft()"></span>
+    <span id="arrow_down" class="arrow arrow-down" onclick="goBack()"></span>
+    <span id="arrow_right" class="arrow arrow-right" onclick="goRight()"></span>
+</div>
+
+<!-- Modal for instructions -->
+<div class="container">
+    <!-- Modal -->
+    <div class="modal fade" id="instruct" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Guide:</h4>
+                </div>
+                <div class="modal-body">
+                    <h3>Welcome to the plato navigation site! </h3>
+                    <p>Here you can manage the robot with the arrows from the keyboard or the arrow buttons that are
+                        displayed on the left corner of the screen. For watching the video you just press the "Show
+                        video" and it will be displayed. In the corner you can see the map that can be zoomed by
+                        pressing in the menu "Show map" or tapping on it.</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Modal for speed -->
+<div class="container">
+    <!-- Modal -->
+    <div class="modal fade" id="speed_modal" role="dialog">
+        <div class="modal-dialog">
+            <!-- Modal content-->
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    <h4 class="modal-title">Change the speed</h4>
+                </div>
+                <div class="modal-body">
+                    <h1>Linear velocity</h1>
+                    <div class="slidecontainer">
+                     <input type="range" min="0" max="100" value="10" class="slider" id="linear_range">
+                     <p>Value: <span id="linear"></span></p>
+                    </div>
+
+                    <h1>Angular velocity</h1>
+                    <div class="slidecontainer">
+                     <input type="range" min="0" max="100" value="10" class="slider" id="angular_range">
+                     <p>Value: <span id="angular"></span></p>
+                    </div>
+
+                </div>
+                <div class="modal-footer">
+                    
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Server response value -->
+<output id="response_value">Waiting response...</output>
+<a id="display_url" href="http://{server_url}">Server url: {server_url}</a>
+
+<!-- js functions for driving robot -->
+<script>
+
+      // verify connection and move robot
+       function checkConnection() {{
+            $.ajax({{
+               url: 'http://{server_url}/check_connection',
+               data: "Sending data to server",
+               error: function() {{
+                  $('#response_value').html('<p>An error has occurred</p>');
+               }},
+               success: function(response_data) {{
+                  $('#response_value').html(response_data);
+               }},
+               type: 'POST'
+            }});
+       }};
+
+      // move forward
+       function goForward() {{
+        $.ajax({{
+          url: 'http://{server_url}/move',
+          data: '{{"forward":true, "back":false,"left":false,"right":false}}',
+          dataType: 'json',
+          type: 'POST'
+        }})
+       }}
+
+      // move back 
+      function goBack() {{
+        $.ajax({{
+          url: 'http://{server_url}/move',
+          data: '{{"forward":false, "back":true,"left":false,"right":false}}',
+          dataType: 'json',
+          type: 'POST'
+        }})
+       }}
+
+       // move left
+       function goLeft() {{
+        $.ajax({{
+          url: 'http://{server_url}/move',
+          data: '{{"forward":false, "back":false,"left":true,"right":false}}',
+          dataType: 'json',
+          type: 'POST'
+        }})
+       }}
+
+       // move right
+       function goRight() {{
+        $.ajax({{
+          url: 'http://{server_url}/move',
+          data: '{{"forward":false, "back":false,"left":false,"right":true}}',
+          dataType: 'json',
+          type: 'POST'
+        }})
+       }}
+
+       //moving from keyboard 
+       document.addEventListener('keydown', function(event) {{
+         if (event.code == 'ArrowUp') {{
+            goForward()
+         }}
+         else if (event.code == 'ArrowDown') {{
+            goBack()
+         }}
+         else if (event.code == 'ArrowLeft') {{
+            goLeft()
+         }}
+         else if (event.code == 'ArrowRight') {{
+            goRight()
+         }}
+        }});  
+
+</script>
+
+<!-- Core plugin JavaScript-->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function(){{
+        $("#show_map").click(function(){{
+           $("#show_video").toggle();
+           $("#show_map").toggle();
+           $("#video_background").attr("src","http://{camera_url}/stream?topic=/map_as_img");
+           $("#iframe_map").attr("src","http://{camera_url}/stream?topic=/plato/camera1/image_raw");
+        }});
+
+        $("#show_video").click(function(){{
+           $("#show_video").toggle();
+           $("#show_map").toggle();
+           $("#video_background").attr("src","http://{camera_url}/stream?topic=/plato/camera1/image_raw");
+           $("#iframe_map").attr("src","http://{camera_url}/stream?topic=/map_as_img");
+        }});
+
+        $("#hide_preview, #show_preview").click(function(){{
+            $("#hide_preview").toggle();
+            $("#show_preview").toggle();
+            $("#plato_map").toggle();
+        }});
+
+    }});
+
+</script>
+
+<script>
+var linearSlider = document.getElementById("linear_range");
+var linearOutput = document.getElementById("linear");
+var angularSlider = document.getElementById("angular_range");
+var angularOutput = document.getElementById("angular");
+linearOutput.innerHTML = linearSlider.value;
+angularOutput.innerHTML = angularSlider.value;
+
+linearSlider.oninput = function() {{
+  linearOutput.innerHTML = this.value;
+}}
+
+angularSlider.oninput = function() {{
+  angularOutput.innerHTML = this.value;
+}}
+</script>
+
+<!-- Logo image -->
+<img id="footer_logo" src="plt.png">
+<!-- Bootstrap core JavaScript-->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</body>
+</html>

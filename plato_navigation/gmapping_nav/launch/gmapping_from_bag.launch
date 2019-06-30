@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<launch>
+
+     <arg name="bag_file_name" default="bag_318.bag"/>
+
+     <param name="/use_sim_time" value="true"/>
+     <node name="rosplay" pkg="rosbag" type="play" args="$(find gmapping_nav)/../bagfiles/$(arg bag_file_name)  --clock"/>
+
+     <param name="robot_description" command="$(find xacro)/xacro.py '$(find plato_description)/urdf/plato.xacro'"/>
+
+    <node name="robot_state_publisher" pkg="robot_state_publisher"
+                type="robot_state_publisher"/>
+
+    <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+              <param name="use_gui" value="False"/>
+    </node>
+
+    <!-- Launch gmapping -->
+    <include file="$(find gmapping_nav)/launch/gmapping.launch">
+    
+    </include>
+
+<node name="rviz" pkg="rviz" type="rviz" args="-d $(find gmapping_nav)/rviz/gmapping_rviz_bag.rviz"/>
+
+
+</launch>

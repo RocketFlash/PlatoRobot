@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+
+<launch>
+
+  <param name="/use_sim_time" value="true"/>
+  <arg name="bag_file_name" default="bag_318.bag"/>
+
+  <node name="rosplay" pkg="rosbag" type="play" args="$(find hector_nav)/../bagfiles/$(arg bag_file_name)  --clock"/>
+
+  <node pkg="tf" type="static_transform_publisher" name="odom_to_chassis" args="0.0 0.0 0.0 0.0 0.0 0.0 /map /odom 40" />
+
+  <param name="robot_description" command="$(find xacro)/xacro.py '$(find plato_description)/urdf/plato.xacro'"/>
+
+  <node name="robot_state_publisher" pkg="robot_state_publisher"
+              type="robot_state_publisher"/>
+
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+            <param name="use_gui" value="False"/>
+  </node>
+
+  <include file="$(find hector_nav)/launch/hector_mapping_params.launch"/>
+
+  <node name="rviz" pkg="rviz" type="rviz" args="-d $(find hector_nav)/rviz/hector_rviz_config.rviz"/>
+
+</launch>

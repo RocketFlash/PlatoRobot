@@ -1,0 +1,14 @@
+ar.sublime*
+*.pyc
+.idea/
+cmake-build-debug/
+.~lock*
+*.traj
+.DS_Store
+._*
+*.bag
+*.tar.gz
+plato_navigation/maps/*
+plato_navigation/bagfiles/*
+*.jpg
+*.png

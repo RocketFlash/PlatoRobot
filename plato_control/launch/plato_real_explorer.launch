@@ -1,0 +1,82 @@
+<?xml version="1.0"?>
+<launch>
+
+   <param name="use_sim_time" value="false"/>
+
+
+  <node pkg="plato_control" name="publish_data" type="publish_data.py"/>
+
+  <node pkg="plato_control" name="subscribe_control" type="subscribe_control.py"/>
+
+  <node pkg="plato_control" name="publish_goals" type="publish_goals.py"/>
+
+  <node pkg="plato_control" name="transform_to_pose" type="transform_to_pose.py"/>
+
+  <!--node pkg="plato_hololens" name="match_point_clouds" type="match_point_clouds.py"/-->
+
+  <node pkg="plato_control" name="publish_odometry" type="publish_odometry.py"/>
+
+  <param name="robot_description" command="$(find xacro)/xacro.py '$(find plato_description)/urdf/plato.xacro'"/>
+
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher"/>
+
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+          <param name="use_gui" value="False"/>
+  </node>
+
+  <include file="$(find velodyne_pointcloud)/launch/VLP16_points.launch">
+ 	<arg name="frame_id" value="velodyne" />
+  </include>
+
+
+    <!-- Launch gmapping -->
+    <include file="$(find gmapping_nav)/launch/gmapping.launch">
+	<arg name="is_simulation" value="false"/>
+    </include>
+
+
+  <!-- This node description you can take from usb_cam-test.launch -->
+   <!--node name="usb_cam" pkg="usb_cam" type="usb_cam_node" output="screen" >
+     <param name="video_device" value="/dev/video0" />
+     <param name="image_width" value="640" />
+     <param name="image_height" value="480" />
+     <param name="pixel_format" value="yuyv" />
+     <param name="camera_frame_id" value="usb_cam" />
+     <param name="io_method" value="mmap"/>
+ </node-->
+
+    <arg name="resolution" default="0.007" />
+
+    <node name="velodyne_2_laserscan" pkg="velodyne_laserscan" type="velodyne_laserscan_node">
+      <param name="resolution" value="$(arg resolution)"/>
+    </node>
+
+  <!-- This node will launch web video server -->
+  <!--node name="web_video_server" pkg="web_video_server" type="web_video_server" /-->
+
+
+  <!--node respawn="true" pkg="joy" type="joy_node" name="plato_joy" >
+    <param name="autorepeat_rate" value="10"/>
+  </node-->
+
+   <!-- Move base -->
+     <include file="$(find move_base_nav)/launch/move_base.launch">
+     </include>
+
+	<!--node name="rviz" pkg="rviz" type="rviz" args="-d $(find gmapping_nav)/rviz/gmapping_rviz.rviz"/-->
+
+    <node pkg="explore_lite" type="explore" respawn="false" name="explore" output="screen">
+        <param name="robot_base_frame" value="chassis"/>
+        <param name="costmap_topic" value="map"/>
+        <param name="costmap_updates_topic" value="map_updates"/>
+        <param name="visualize" value="true"/>
+        <param name="planner_frequency" value="0.33"/>
+        <param name="progress_timeout" value="30.0"/>
+        <param name="potential_scale" value="3.0"/>
+        <param name="orientation_scale" value="0.0"/>
+        <param name="gain_scale" value="1.0"/>
+        <param name="transform_tolerance" value="0.3"/>
+        <param name="min_frontier_size" value="0.5"/>
+     </node>
+
+</launch>
